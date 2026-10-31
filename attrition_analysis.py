@@ -64,3 +64,44 @@ y_pred = model.predict(X_test)
 print(f"Model Accuracy: {accuracy_score(y_test, y_pred) * 100:.2f}%")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
+import pandas as pd
+
+# Load the dataset
+df = pd.read_csv('hr_data.csv')
+
+# Display the first 5 rows
+print("--- First 5 Rows ---")
+print(df.head())
+
+# Display dataset info (columns, non-null counts, data types)
+print("\n--- Dataset Info ---")
+print(df.info())
+
+# Display basic statistical summary
+print("\n--- Summary Statistics ---")
+print(df.describe())
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
+# Convert 'attrition' (Yes/No) into binary numerical values (1/0)
+df['attrition_target'] = df['attrition'].apply(lambda x: 1 if x == 'Yes' else 0)
+
+# Select features for our model (e.g., monthly salary, years at company, satisfaction score)
+X = df[['monthly_salary', 'years_at_company', 'satisfaction_score']]
+y = df['attrition_target']
+
+# Split data into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the Logistic Regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Make predictions and evaluate accuracy
+y_pred = model.predict(X_test)
+print("\n--- Model Accuracy ---")
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+
+print("\n--- Classification Report ---")
+print(classification_report(y_test, y_pred))
